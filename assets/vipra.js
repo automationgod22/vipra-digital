@@ -108,58 +108,92 @@ var VIPRA_CONFIG = {
   var unlock = function () { if (Sound.want) { Sound.ready(); Sound.ambient(true); } window.removeEventListener("pointerdown", unlock); window.removeEventListener("keydown", unlock); };
   window.addEventListener("pointerdown", unlock); window.addEventListener("keydown", unlock);
 
-  /* ================= VIP ================= */
+  /* ================= VIP (speaks only when touched) ================= */
   var vipN = 0;
   function vipSVG() {
-    var k = "v" + (++vipN);
-    return '<svg class="vip-svg" viewBox="0 0 120 150" aria-hidden="true">' +
-      '<defs><linearGradient id="' + k + 'h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A283FF"/><stop offset="1" stop-color="#6534F0"/></linearGradient>' +
-      '<radialGradient id="' + k + 'j"><stop offset="0" stop-color="#F1E9FF"/><stop offset=".5" stop-color="#9F7BFF" stop-opacity=".7"/><stop offset="1" stop-color="#8456FF" stop-opacity="0"/></radialGradient></defs>' +
-      '<ellipse class="shadow" cx="60" cy="146" rx="22" ry="3.5" fill="#000" opacity=".28"/>' +
-      '<g class="float">' +
-      '<ellipse class="jet" cx="60" cy="132" rx="9" ry="10" fill="url(#' + k + 'j)"/>' +
-      '<g class="arm-l"><path d="M38 92C30 98 28 108 30 116" stroke="#1B1724" stroke-width="9" stroke-linecap="round" fill="none"/><circle cx="30" cy="118" r="6" fill="url(#' + k + 'h)"/></g>' +
-      '<g class="arm-r"><path d="M82 92C90 98 92 108 90 116" stroke="#1B1724" stroke-width="9" stroke-linecap="round" fill="none"/><circle cx="90" cy="118" r="6" fill="url(#' + k + 'h)"/></g>' +
-      '<path d="M40 88Q60 82 80 88L84 122Q60 132 36 122Z" fill="#1B1724"/>' +
-      '<path d="M60 89V127" stroke="#2E2939" stroke-width="1.2"/>' +
-      '<path d="M46 86Q60 79 74 86L73 92Q60 87 47 92Z" fill="#26212F"/>' +
-      '<circle cx="60" cy="98" r="1.7" fill="#B49BFF"/><circle cx="60" cy="106" r="1.7" fill="#B49BFF"/><circle cx="60" cy="114" r="1.7" fill="#B49BFF"/>' +
-      '<path d="M67 100h10" stroke="#2E2939" stroke-width="1.3"/><path d="M68 100l2.4-4.4 2 3.2 2.1-3.8 1.6 5z" fill="#8456FF"/>' +
-      '<rect x="42" y="97" width="13" height="7.5" rx="1.8" fill="#F3F1F8"/><text x="48.5" y="102.9" text-anchor="middle" font-size="5" font-weight="800" fill="#4E22D8" font-family="Hanken Grotesk, Arial, sans-serif">VIP</text>' +
-      '<rect x="53" y="76" width="14" height="9" rx="3" fill="#2E2939"/>' +
-      '<path d="M60 22V12" stroke="#2E2939" stroke-width="2.6" stroke-linecap="round"/><circle class="ant" cx="60" cy="9" r="4.4" fill="#C9B3FF"/>' +
-      '<rect x="15" y="40" width="10" height="22" rx="5" fill="#4B22C9"/><rect x="95" y="40" width="10" height="22" rx="5" fill="#4B22C9"/>' +
-      '<rect x="22" y="20" width="76" height="60" rx="26" fill="url(#' + k + 'h)"/>' +
-      '<path d="M35 26Q60 19 85 26" stroke="#fff" stroke-opacity=".38" stroke-width="2.6" stroke-linecap="round" fill="none"/>' +
-      '<rect x="30" y="33" width="60" height="36" rx="16" fill="#0D0B14"/>' +
+    var k = "v" + (++vipN), u = function (id) { return "url(#" + k + id + ")"; };
+    return '<svg class="vip-svg" viewBox="0 0 140 170" aria-hidden="true"><defs>' +
+      '<radialGradient id="' + k + 'hd" cx=".36" cy=".28" r=".9"><stop offset="0" stop-color="#E2D6FF"/><stop offset=".3" stop-color="#A782FF"/><stop offset=".72" stop-color="#6A3CF2"/><stop offset="1" stop-color="#3F16BE"/></radialGradient>' +
+      '<linearGradient id="' + k + 'sh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset=".42" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
+      '<linearGradient id="' + k + 'vs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#261E3B"/><stop offset="1" stop-color="#07060C"/></linearGradient>' +
+      '<linearGradient id="' + k + 'bd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2C2440"/><stop offset="1" stop-color="#0D0B14"/></linearGradient>' +
+      '<radialGradient id="' + k + 'jt"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="#CDB8FF" stop-opacity=".9"/><stop offset="1" stop-color="#8456FF" stop-opacity="0"/></radialGradient>' +
+      '<filter id="' + k + 'gl" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
+      '<filter id="' + k + 'sf" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.3"/></filter>' +
+      '</defs>' +
+      '<ellipse class="vs-shadow" cx="70" cy="164" rx="25" ry="3.6" fill="#000" opacity=".3"/>' +
+      '<g class="boing"><g class="float">' +
+      '<g class="jet"><ellipse cx="70" cy="147" rx="14" ry="5" fill="' + u("jt") + '"/><path d="M62.5 144Q70 165 77.5 144Z" fill="' + u("jt") + '"/></g>' +
+      '<g class="arm-l"><path d="M49 109C41 114 37 122 38 129" stroke="#2A2339" stroke-width="10.5" stroke-linecap="round" fill="none"/><path d="M47 110.5C41 115 38.6 121 38.8 126" stroke="#fff" stroke-opacity=".12" stroke-width="1.6" stroke-linecap="round" fill="none"/><path d="M33.6 129.5h9" stroke="#E6E0F2" stroke-width="2.6" stroke-linecap="round"/><circle cx="38" cy="134" r="7" fill="' + u("hd") + '"/></g>' +
+      '<g class="arm-r"><path d="M91 109C99 114 103 122 102 129" stroke="#2A2339" stroke-width="10.5" stroke-linecap="round" fill="none"/><path d="M93 110.5C99 115 101.4 121 101.2 126" stroke="#fff" stroke-opacity=".12" stroke-width="1.6" stroke-linecap="round" fill="none"/><path d="M97.4 129.5h9" stroke="#E6E0F2" stroke-width="2.6" stroke-linecap="round"/><circle cx="102" cy="134" r="7" fill="' + u("hd") + '"/></g>' +
+      '<path d="M50 101Q70 95 90 101L95 135Q95 142 88 143H52Q45 142 45 135Z" fill="' + u("bd") + '"/>' +
+      '<path d="M53 102Q70 97 87 102" stroke="#fff" stroke-opacity=".14" stroke-width="1.4" fill="none"/>' +
+      '<path d="M70 105V142" stroke="#3B3252" stroke-width="1.2"/>' +
+      '<path d="M57 100Q70 94 83 100L82.4 106Q70 101.6 57.6 106Z" fill="#30284A" stroke="#4B4068" stroke-width=".6"/>' +
+      '<path d="M68.5 101.2L70 105.6 71.5 101.2" fill="#0D0B14"/>' +
+      '<g fill="#E6E0F2"><circle cx="70" cy="112" r="1.9"/><circle cx="70" cy="120" r="1.9"/><circle cx="70" cy="128" r="1.9"/></g>' +
+      '<path d="M77.5 114h10.5" stroke="#3B3252" stroke-width="1.2"/><path d="M78.6 114l2.6-4.8 2.1 3.5 2.3-4.2 1.6 5.5z" fill="#A27DFF"/>' +
+      '<rect x="50.5" y="111" width="14" height="8" rx="2" fill="#F4F1FA"/><text x="57.5" y="117.2" text-anchor="middle" font-size="5.2" font-weight="800" fill="#4E22D8" font-family="Hanken Grotesk, Arial, sans-serif">VIP</text>' +
+      '<ellipse cx="70" cy="100" rx="15" ry="3.2" fill="#000" opacity=".35"/>' +
+      '<g class="head">' +
+      '<path d="M70 27Q71 17 76.5 11" stroke="#3A2D63" stroke-width="2.6" fill="none" stroke-linecap="round"/><ellipse cx="70" cy="26.5" rx="6.5" ry="2.6" fill="#3A2D63"/>' +
+      '<circle class="ant" cx="77.5" cy="9" r="5" fill="#C9B3FF" filter="' + u("gl") + '"/>' +
+      '<circle cx="24" cy="63" r="10.5" fill="#34246E"/><circle class="led" cx="24" cy="63" r="5.6" fill="none" stroke="#C2A8FF" stroke-width="2" filter="' + u("gl") + '"/>' +
+      '<circle cx="116" cy="63" r="10.5" fill="#34246E"/><circle class="led" cx="116" cy="63" r="5.6" fill="none" stroke="#C2A8FF" stroke-width="2" filter="' + u("gl") + '"/>' +
+      '<rect x="24" y="24" width="92" height="77" rx="36" fill="' + u("hd") + '"/>' +
+      '<rect x="24" y="24" width="92" height="77" rx="36" fill="' + u("sh") + '"/>' +
+      '<ellipse cx="45" cy="36" rx="12" ry="4.6" transform="rotate(-24 45 36)" fill="#fff" opacity=".6" filter="' + u("sf") + '"/>' +
+      '<path d="M40 93Q70 105 100 93" stroke="#E6DBFF" stroke-opacity=".32" stroke-width="2" fill="none" stroke-linecap="round"/>' +
+      '<rect x="34" y="40" width="72" height="49" rx="23" fill="' + u("vs") + '"/>' +
+      '<rect x="34.5" y="40.5" width="71" height="48" rx="22.5" fill="none" stroke="#fff" stroke-opacity=".09"/>' +
+      '<path d="M45 47Q53 42.6 63 42.6" stroke="#fff" stroke-opacity=".18" stroke-width="3" stroke-linecap="round" fill="none"/>' +
       '<g class="eyes">' +
-      '<rect class="eye" x="44" y="42" width="9" height="15" rx="4.5" fill="#F4EEFF"/><rect class="eye" x="67" y="42" width="9" height="15" rx="4.5" fill="#F4EEFF"/>' +
-      '<g class="ex ex-happy" fill="none" stroke="#F4EEFF" stroke-width="3" stroke-linecap="round"><path d="M43.5 52.5q5-7 10 0"/><path d="M66.5 52.5q5-7 10 0"/></g>' +
-      '<g class="ex ex-wow" fill="#F4EEFF"><circle cx="48.5" cy="49.5" r="5.2"/><circle cx="71.5" cy="49.5" r="5.2"/></g>' +
-      '<g class="ex ex-love" fill="#C9B3FF"><path d="M48.5 56l-5.4-5.2a3.1 3.1 0 0 1 5.4-3.6 3.1 3.1 0 0 1 5.4 3.6z"/><path d="M71.5 56l-5.4-5.2a3.1 3.1 0 0 1 5.4-3.6 3.1 3.1 0 0 1 5.4 3.6z"/></g>' +
-      '<rect class="mouth" x="56" y="61.5" width="8" height="2" rx="1" fill="#B49BFF"/>' +
-      '</g></g></svg>';
+      '<rect class="eye eye-l" x="50" y="53" width="11" height="18" rx="5.5" fill="#F7F2FF" filter="' + u("gl") + '"/>' +
+      '<rect class="eye eye-r" x="79" y="53" width="11" height="18" rx="5.5" fill="#F7F2FF" filter="' + u("gl") + '"/>' +
+      '<g class="ex ex-happy" fill="none" stroke="#F7F2FF" stroke-width="3.4" stroke-linecap="round" filter="' + u("gl") + '"><path d="M49.5 65q6-8 12 0"/><path d="M78.5 65q6-8 12 0"/></g>' +
+      '<g class="ex ex-wink" fill="none" stroke="#F7F2FF" stroke-width="3.4" stroke-linecap="round" filter="' + u("gl") + '"><path d="M78.5 65q6-8 12 0"/></g>' +
+      '<g class="ex ex-wow" fill="#F7F2FF" filter="' + u("gl") + '"><circle cx="55.5" cy="62" r="6.4"/><circle cx="84.5" cy="62" r="6.4"/></g>' +
+      '<g class="ex ex-love" fill="#D9C7FF" filter="' + u("gl") + '"><path d="M55.5 69l-6.4-6.2a3.7 3.7 0 0 1 6.4-4.3 3.7 3.7 0 0 1 6.4 4.3z"/><path d="M84.5 69l-6.4-6.2a3.7 3.7 0 0 1 6.4-4.3 3.7 3.7 0 0 1 6.4 4.3z"/></g>' +
+      '<ellipse cx="44.5" cy="77" rx="4.6" ry="2.5" fill="#B794FF" opacity=".42"/><ellipse cx="95.5" cy="77" rx="4.6" ry="2.5" fill="#B794FF" opacity=".42"/>' +
+      '<path class="mouth" d="M65 78.5q5 4 10 0" stroke="#D2C1FF" stroke-width="2.4" fill="none" stroke-linecap="round"/>' +
+      '<ellipse class="mouth-o" cx="70" cy="79.5" rx="3.6" ry="3" fill="#D2C1FF"/>' +
+      '</g></g></g></g></svg>';
+  }
+  function sparkle(host, n) {
+    if (calm()) return;
+    for (var i = 0; i < (n || 7); i++) {
+      var s = document.createElement("span"), a = -Math.PI / 2 + (Math.random() - .5) * 2.4, d = 38 + Math.random() * 46;
+      s.className = "spark" + (i % 3 ? "" : " spark--w");
+      s.style.setProperty("--tx", (Math.cos(a) * d).toFixed(1) + "px"); s.style.setProperty("--ty", (Math.sin(a) * d).toFixed(1) + "px");
+      s.style.setProperty("--sz", (6 + Math.random() * 8).toFixed(1) + "px"); s.style.animationDelay = (i * 25) + "ms";
+      host.appendChild(s); setTimeout(function (el) { el.remove(); }.bind(null, s), 1100);
+    }
+  }
+  function react(svg, m) {
+    svg.classList.remove("is-boing", "ex-happy", "ex-wow", "ex-love", "ex-wink"); void svg.getBoundingClientRect();
+    svg.classList.add("is-boing", "ex-" + m);
+    clearTimeout(svg._t); svg._t = setTimeout(function () { svg.classList.remove("ex-" + m, "is-boing"); }, 1800);
   }
 
   var Vip = (function () {
-    var root = $("#vip"), fig = $("#vipFig"), bub = $("#vipBubble"), txt = $("#vipText");
-    if (!root || !fig) return { say: function () {}, mood: function () {} };
-    fig.innerHTML = vipSVG();
-    var svg = $("svg", fig), eyes = $(".eyes", svg);
-    var st = { x: 20, y: innerHeight - 20, s: 1, drag: false, free: false, fx: 0, fy: 0, gx: 0, gy: 0, moved: false, tx: null };
-    var anchor = $("#vipAnchor");
-    var typing = null, hideT = null, moodT = null;
+    var root = $("#vip"), fig = $("#vipFig"), panel = $("#vipPanel");
+    if (!root || !fig || !panel) return { mood: function () {}, hide: function () {}, open: function () {} };
+    var met = false; try { met = !!sessionStorage.getItem("vd-vip-met"); } catch (e) {}
+    fig.innerHTML = vipSVG() + (met ? "" : '<span class="vip__dot" aria-hidden="true"></span>') + '<span class="vip__hint" aria-hidden="true">Tap to ask VIP</span>';
+    var svg = $("svg", fig), eyes = $(".eyes", svg), head = $(".head", svg);
+    var st = { x: 20, y: innerHeight - 20, s: 1, drag: false, free: false, fx: 0, fy: 0, gx: 0, gy: 0, moved: false };
+    var anchor = $("#vipAnchor"), moodT = null;
 
     function target() {
-      var sl = parseFloat(getComputedStyle(html).getPropertyValue("--sal")) || 0;
-      var dock = { x: 16 + sl, y: innerHeight - 14, s: 1 };
+      var dock = { x: 16, y: innerHeight - 14, s: 1 };
       if (!anchor || innerWidth < 1040) return dock;
-      var r = anchor.getBoundingClientRect();
-      var t = ease(clamp(scrollY / (innerHeight * .5), 0, 1));
-      var hero = { x: r.left, y: r.top, s: 1.45 };
-      return { x: lerp(hero.x, dock.x, t), y: lerp(hero.y, dock.y, t), s: lerp(hero.s, 1, t) };
+      var r = anchor.getBoundingClientRect(), t = ease(clamp(scrollY / (innerHeight * .5), 0, 1));
+      return { x: lerp(r.left, dock.x, t), y: lerp(r.top, dock.y, t), s: lerp(1.5, 1, t) };
     }
-    function apply() { root.style.setProperty("--x", st.x.toFixed(1) + "px"); root.style.setProperty("--y", st.y.toFixed(1) + "px"); root.style.setProperty("--s", st.s.toFixed(3)); }
+    function apply() {
+      root.style.setProperty("--x", st.x.toFixed(1) + "px"); root.style.setProperty("--y", st.y.toFixed(1) + "px"); root.style.setProperty("--s", st.s.toFixed(3));
+      if (open) clampPanel();
+    }
     function place() {
       if (st.drag) return;
       var t = target();
@@ -171,74 +205,112 @@ var VIPRA_CONFIG = {
       apply();
     }
     function mood(m, ms) {
-      svg.classList.remove("ex-happy", "ex-wow", "ex-love"); clearTimeout(moodT);
+      svg.classList.remove("ex-happy", "ex-wow", "ex-love", "ex-wink"); clearTimeout(moodT);
       if (m) { svg.classList.add("ex-" + m); moodT = setTimeout(function () { svg.classList.remove("ex-" + m); }, ms || 2200); }
     }
     function wave() { svg.classList.remove("is-wave"); void svg.getBoundingClientRect(); svg.classList.add("is-wave"); setTimeout(function () { svg.classList.remove("is-wave"); }, 2100); }
-    function hide() { bub.classList.remove("is-on"); svg.classList.remove("is-talk"); clearInterval(typing); }
-    function say(text, opt) {
-      opt = opt || {};
-      if (!text) return;
-      clearInterval(typing); clearTimeout(hideT);
-      bub.classList.add("is-on"); svg.classList.add("is-talk");
-      if (opt.mood) mood(opt.mood); if (opt.wave) wave();
-      if (calm()) { txt.textContent = text; svg.classList.remove("is-talk"); }
-      else {
-        var i = 0; txt.textContent = "";
-        typing = setInterval(function () {
-          i += 2; txt.textContent = text.slice(0, i);
-          if (i % 6 === 0) Sound.chirp();
-          if (i >= text.length) { clearInterval(typing); txt.textContent = text; svg.classList.remove("is-talk"); }
-        }, 22);
-      }
-      hideT = setTimeout(hide, Math.max(4800, text.length * 70));
-    }
-    bub.addEventListener("mouseenter", function () { clearTimeout(hideT); });
-    bub.addEventListener("mouseleave", function () { hideT = setTimeout(hide, 2500); });
-    $("#vipX").addEventListener("click", function (e) { e.stopPropagation(); hide(); Sound.tick(); });
 
-    var lines = [
-      ["I don't take chai breaks. Ever.", "happy"],
-      ["Try the sound button up top. I have a voice!", "wow"],
-      ["Drag me around. I like flying.", "happy"],
-      ["Switch the theme. I look good in both.", "love"],
-      ["Tap 'Aa' for bigger text and calmer motion.", "happy"],
-      ["The WhatsApp button never sleeps either.", "wow"],
-      ["Very Important Pixel, at your service.", "love"]
+    /* ---- chat panel ---- */
+    var log = $("#vpLog"), chipsEl = $("#vpChips"), open = false, greeted = false, lastCtx = null, chain = Promise.resolve();
+    var QA = [
+      ["What do you do?", "We design and build websites for local businesses and creators. Made for phones first, WhatsApp built in, and set up to show on Google.", ""],
+      ["How much does it cost?", "It depends on the pages and features you need. Send us a quick message and you'll get a clear price before any work starts.", '<a class="vm__link" href="' + waLink("Hi Vipra Digital! Can you share the price for a website?") + '" target="_blank" rel="noopener">Ask the price on WhatsApp</a>'],
+      ["How long does it take?", "It depends on the size of the site. You get the timeline together with the price, so you know your launch date before we start.", ""],
+      ["I'm not technical. Is that OK?", "Totally fine. Talk to us in Hindi or English, by text or voice note. We handle everything technical and explain it simply.", ""],
+      ["Show me your work", "We're a young studio, so we made six concept websites for real kinds of local businesses. Take a look.", '<a class="vm__link" href="work.html">See the six concepts</a>']
     ];
-    var li = 0;
-    function poke() { var l = lines[li++ % lines.length]; Sound.pop(); say(l[0], { mood: l[1], wave: li % 2 === 0 }); }
+    QA.forEach(function (q, i) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "vp__chip"; b.textContent = q[0];
+      b.addEventListener("click", function () { ask(i); }); chipsEl.appendChild(b);
+    });
+    function scrollLog() { if (open) clampPanel(); log.scrollTop = log.scrollHeight; }
+    function bubble(cls, text) { var d = document.createElement("div"); d.className = "vm " + cls; if (text) d.textContent = text; log.appendChild(d); scrollLog(); return d; }
+    function reply(text, extra) {
+      chain = chain.then(function () {
+        return new Promise(function (res) {
+          var t = bubble("vm--typing", ""); t.innerHTML = "<i></i><i></i><i></i>";
+          svg.classList.add("is-talk");
+          setTimeout(function () {
+            t.remove();
+            var m = bubble("vm--vip", ""), txt = document.createElement("span"); m.appendChild(txt);
+            var done = function () { txt.textContent = text; if (extra) { var w = document.createElement("div"); w.innerHTML = extra; m.appendChild(w.firstChild); } svg.classList.remove("is-talk"); scrollLog(); res(); };
+            if (calm()) return done();
+            var i = 0, iv = setInterval(function () {
+              i += 3; txt.textContent = text.slice(0, i); if (i % 9 === 0) Sound.chirp(); scrollLog();
+              if (i >= text.length) { clearInterval(iv); done(); }
+            }, 18);
+          }, calm() ? 120 : 520 + Math.random() * 300);
+        });
+      });
+    }
+    function ask(i) { var q = QA[i]; Sound.tick(); chain = chain.then(function () { bubble("vm--me", q[0]); mood(i === 4 ? "wink" : "happy", 2000); }); reply(q[1], q[2]); }
+    function ctxSection() {
+      var best = null, mid = innerHeight * .5;
+      $$("[data-vip]").forEach(function (el) { var r = el.getBoundingClientRect(); if (r.top <= mid && r.bottom >= mid && el.getAttribute("data-vip")) best = el; });
+      return best;
+    }
+    function clampPanel() {
+      panel.style.setProperty("--pdx", "0px"); panel.style.setProperty("--pdy", "0px"); panel.style.maxHeight = "";
+      var top = 80, r = panel.getBoundingClientRect(), avail = r.bottom - top;
+      if (avail < r.height) { panel.style.maxHeight = Math.max(280, avail).toFixed(0) + "px"; r = panel.getBoundingClientRect(); }
+      var dx = 0, dy = 0;
+      if (r.right > innerWidth - 12) dx = innerWidth - 12 - r.right;
+      if (r.left + dx < 12) dx = 12 - r.left;
+      if (r.top < top) dy = top - r.top;
+      if (r.bottom + dy > innerHeight - 8) dy = innerHeight - 8 - r.bottom;
+      panel.style.setProperty("--pdx", dx.toFixed(0) + "px"); panel.style.setProperty("--pdy", dy.toFixed(0) + "px");
+    }
+    function setOpen(v) {
+      open = v; panel.classList.toggle("is-open", v); root.classList.toggle("is-open", v);
+      fig.setAttribute("aria-expanded", v ? "true" : "false");
+      if (v) panel.removeAttribute("inert"); else panel.setAttribute("inert", "");
+      if (v) {
+        clampPanel();
+        if (!met) { met = true; try { sessionStorage.setItem("vd-vip-met", "1"); } catch (e) {} var dot = $(".vip__dot", fig); if (dot) dot.remove(); }
+        var ctx = ctxSection(), line = ctx && ctx.getAttribute("data-vip");
+        if (!greeted) { greeted = true; reply("Hi! I'm VIP, your guide here. Tap a question below, or ask a real human on WhatsApp."); if (line) reply(line); lastCtx = ctx; }
+        else if (ctx && ctx !== lastCtx && line) { lastCtx = ctx; reply(line); }
+      }
+    }
+    function touch() { react(svg, open ? "wink" : "happy"); sparkle(fig, 7); Sound.pop(); if (!open) wave(); setOpen(!open); }
+    $("#vpX").addEventListener("click", function () { setOpen(false); Sound.tick(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && open) { setOpen(false); fig.focus(); } });
+    document.addEventListener("pointerdown", function (e) { if (open && !panel.contains(e.target) && !fig.contains(e.target)) setOpen(false); });
 
-    // drag + click
+    /* ---- drag + tap ---- */
     fig.addEventListener("pointerdown", function (e) {
       st.drag = true; st.moved = false; st.gx = e.clientX; st.gy = e.clientY; st.fx = e.clientX - st.x; st.fy = e.clientY - st.y;
       try { fig.setPointerCapture(e.pointerId); } catch (err) {}
     });
     fig.addEventListener("pointermove", function (e) {
       if (!st.drag) return;
-      if (!st.moved && Math.hypot(e.clientX - st.gx, e.clientY - st.gy) > 6) { st.moved = true; root.classList.add("is-drag"); mood("wow", 99999); say("Wheee!"); }
-      if (st.moved) { st.x = e.clientX - st.fx; st.y = e.clientY - st.fy; st.s = lerp(st.s, 1.1, .2); apply(); }
+      if (!st.moved && Math.hypot(e.clientX - st.gx, e.clientY - st.gy) > 6) { st.moved = true; root.classList.add("is-drag"); mood("wow", 99999); }
+      if (st.moved) { st.x = e.clientX - st.fx; st.y = e.clientY - st.fy; st.s = lerp(st.s, 1.08, .2); apply(); }
     });
     function up() {
       if (!st.drag) return; st.drag = false;
-      if (st.moved) { root.classList.remove("is-drag"); mood("happy"); say("Back to my corner."); st.free = true; requestAnimationFrame(place); Sound.pop(); }
-      else poke();
+      if (st.moved) { root.classList.remove("is-drag"); mood("happy"); st.free = true; requestAnimationFrame(place); Sound.pop(); }
+      else touch();
     }
     fig.addEventListener("pointerup", up); fig.addEventListener("pointercancel", up);
-    fig.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); poke(); } });
+    fig.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); touch(); if (open) setTimeout(function () { var c = $(".vp__chip", panel); if (c) c.focus(); }, 60); } });
 
-    // eyes follow pointer + blink
-    window.addEventListener("pointermove", function (e) {
-      var r = fig.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height * .33;
-      var dx = clamp((e.clientX - cx) / 80, -1, 1) * 3.2, dy = clamp((e.clientY - cy) / 80, -1, 1) * 2.2;
-      eyes.style.transform = "translate(" + dx.toFixed(2) + "px," + dy.toFixed(2) + "px)";
-    }, { passive: true });
-    (function blink() { setTimeout(function () { svg.classList.add("is-blink"); setTimeout(function () { svg.classList.remove("is-blink"); blink(); }, 130); }, 2400 + Math.random() * 3600); })();
+    /* ---- alive: eyes and head follow the pointer, blink, glance around ---- */
+    var look = function (x, y) {
+      var r = fig.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height * .35;
+      var nx = clamp((x - cx) / 160, -1, 1), ny = clamp((y - cy) / 160, -1, 1);
+      eyes.style.transform = "translate(" + (nx * 4).toFixed(2) + "px," + (ny * 2.6).toFixed(2) + "px)";
+      head.style.transform = "rotate(" + (nx * 5).toFixed(2) + "deg)";
+    };
+    var lastMove = performance.now();
+    window.addEventListener("pointermove", function (e) { lastMove = performance.now(); look(e.clientX, e.clientY); }, { passive: true });
+    setInterval(function () { if (performance.now() - lastMove > 4000 && !calm()) { var r = fig.getBoundingClientRect(); look(r.left + (Math.random() - .5) * 600, r.top + (Math.random() - .5) * 300); } }, 2600);
+    (function blink() { setTimeout(function () { svg.classList.add("is-blink"); setTimeout(function () { svg.classList.remove("is-blink"); blink(); }, 120); }, 2200 + Math.random() * 3800); })();
 
     window.addEventListener("scroll", function () { if (!st.free) requestAnimationFrame(place); }, { passive: true });
     window.addEventListener("resize", function () { requestAnimationFrame(place); });
     place();
-    return { say: say, mood: mood, wave: wave, hide: hide };
+    return { mood: mood, wave: wave, hide: function () {}, open: function () { if (!open) touch(); } };
   })();
 
   /* ================= SHUTTER: loader + page transitions ================= */
@@ -248,8 +320,8 @@ var VIPRA_CONFIG = {
     try { sessionStorage.setItem("vd-seen", "1"); } catch (e) {}
     var neon = $("#heroNeon");
     if (neon && !calm()) { neon.classList.add("is-flicker"); Sound.buzz(); }
-    var first = $("[data-vip]");
-    if (first) setTimeout(function () { Vip.say(first.getAttribute("data-vip"), { mood: "happy", wave: true }); seen.add(first); }, mode === "first" ? 500 : 350);
+    html.classList.add("intro-done");
+    var hg = $(".hang"); if (hg && !calm()) setTimeout(function () { hg.classList.add("is-flicker"); Sound.buzz(); }, 700);
   }
   function openShutter(fast) {
     if (opened) return; opened = true;
@@ -294,14 +366,14 @@ var VIPRA_CONFIG = {
   var tSound = $("#tSound"), tTheme = $("#tTheme"), tEasy = $("#tEasy");
   if (tSound) {
     tSound.setAttribute("aria-pressed", Sound.want ? "true" : "false");
-    tSound.addEventListener("click", function () { Sound.set(!Sound.want); Vip.say(Sound.want ? "Sound on. Hear that? That's the street at night." : "Sound off. I'll keep it down.", { mood: Sound.want ? "happy" : null }); });
+    tSound.addEventListener("click", function () { Sound.set(!Sound.want); if (Sound.want) Vip.mood("happy", 1600); });
   }
   function isDark() { var t = html.getAttribute("data-theme"); return t ? t === "dark" : !(window.matchMedia && matchMedia("(prefers-color-scheme: light)").matches); }
   if (tTheme) tTheme.addEventListener("click", function () {
     var next = isDark() ? "light" : "dark";
     html.setAttribute("data-theme", next); store.set("vd-theme", next); Sound.sw();
     var m = $('meta[name="theme-color"]'); if (m) m.setAttribute("content", next === "dark" ? "#0A0910" : "#F4F3F7");
-    Vip.say(next === "light" ? "Lights on! Good morning." : "Night mode. My favourite.", { mood: "love" });
+    Vip.mood("love", 1400);
     document.dispatchEvent(new Event("vd-theme"));
   });
   if (tEasy) {
@@ -309,7 +381,7 @@ var VIPRA_CONFIG = {
     tEasy.addEventListener("click", function () {
       var on = !html.classList.contains("easy");
       html.classList.toggle("easy", on); store.set("vd-easy", on ? "1" : "0"); tEasy.setAttribute("aria-pressed", on ? "true" : "false"); Sound.sw();
-      Vip.say(on ? "Easy view on. Bigger text, calmer motion." : "Full experience is back on.", { mood: "happy" });
+      Vip.mood("happy", 1400);
       document.dispatchEvent(new Event("vd-easy"));
       revealAll();
     });
@@ -326,6 +398,7 @@ var VIPRA_CONFIG = {
     tMenu.setAttribute("aria-label", open ? "Close menu" : "Open menu");
     if (open) menu.removeAttribute("inert"); else menu.setAttribute("inert", "");
     document.body.style.overflow = open ? "hidden" : "";
+    if (window.__lenis) window.__lenis[open ? "stop" : "start"]();
     Sound.shutter(!open, .4);
   }
   if (tMenu) tMenu.addEventListener("click", function () { setMenu(!menu.classList.contains("is-open")); });
@@ -350,7 +423,7 @@ var VIPRA_CONFIG = {
       }
     });
   });
-  var revealEls = $$(".pre, .split");
+  var revealEls = $$(".pre, .split, .reveal-word");
   var io = "IntersectionObserver" in window ? new IntersectionObserver(function (es) {
     es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.remove("is-hidden"); io.unobserve(e.target); } });
   }, { rootMargin: "0px 0px -8% 0px" }) : null;
@@ -359,19 +432,6 @@ var VIPRA_CONFIG = {
     revealEls.forEach(function (el) {
       if (el.getBoundingClientRect().top > innerHeight * .95) { el.classList.add("is-hidden"); io.observe(el); }
     });
-  }
-
-  /* ================= VIP section lines ================= */
-  var seen = new Set();
-  if ("IntersectionObserver" in window) {
-    var vio = new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
-        if (e.isIntersecting && !seen.has(e.target) && opened && html.classList.contains("shutter-gone")) {
-          seen.add(e.target); Vip.say(e.target.getAttribute("data-vip"), { mood: Math.random() > .5 ? "happy" : null });
-        }
-      });
-    }, { threshold: .35 });
-    $$("[data-vip]").forEach(function (el) { if (el.getAttribute("data-vip")) vio.observe(el); });
   }
 
   /* ================= micro-interactions ================= */
@@ -397,7 +457,7 @@ var VIPRA_CONFIG = {
   });
   $$("[data-copy]").forEach(function (b) {
     b.addEventListener("click", function () {
-      var v = b.getAttribute("data-copy"), done = function () { b.textContent = "Copied"; b.classList.add("is-done"); Vip.say("Copied! Talk soon.", { mood: "happy" }); setTimeout(function () { b.textContent = "Copy"; b.classList.remove("is-done"); }, 1800); };
+      var v = b.getAttribute("data-copy"), done = function () { b.textContent = "Copied"; b.classList.add("is-done"); setTimeout(function () { b.textContent = "Copy"; b.classList.remove("is-done"); }, 1800); };
       var fallback = function () { var r = document.createRange(); r.selectNodeContents(b.parentNode.firstChild); var s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Selected"; setTimeout(function () { b.textContent = "Copy"; }, 1800); };
       try { navigator.clipboard.writeText(v).then(done, fallback); } catch (err) { fallback(); }
     });
@@ -470,8 +530,17 @@ var VIPRA_CONFIG = {
     }
     var geo = new T.ExtrudeGeometry(shapes, { depth: 64, bevelEnabled: true, bevelThickness: 9, bevelSize: 6, bevelSegments: 6, curveSegments: 24 });
     geo.center();
-    var cap = new T.MeshPhysicalMaterial({ color: 0x050409, metalness: .55, roughness: .24, clearcoat: 1, clearcoatRoughness: .08 });
-    var side = new T.MeshStandardMaterial({ color: 0x8a5cff, emissive: 0x5b2ee0, emissiveIntensity: .85, metalness: .25, roughness: .32 });
+    try {
+      var pm = new T.PMREMGenerator(renderer), env = new T.Scene();
+      env.add(new T.Mesh(new T.BoxGeometry(10, 10, 10), new T.MeshBasicMaterial({ color: 0x07060b, side: T.BackSide })));
+      [[0xffffff, 0, 4.6, 1.5, 7, 1.1], [0xb49bff, -4.6, .5, 1, 1.1, 5], [0x7a4dff, 4.6, 1, -1, 1.2, 4.5], [0xffffff, 2.2, -1.2, 4.8, 2.4, .8]].forEach(function (L) {
+        var m = new T.Mesh(new T.PlaneGeometry(L[4], L[5]), new T.MeshBasicMaterial({ color: L[0], side: T.DoubleSide }));
+        m.position.set(L[1], L[2], L[3]); m.lookAt(0, 0, 0); env.add(m);
+      });
+      scene.environment = pm.fromScene(env, .02).texture;
+    } catch (e) {}
+    var cap = new T.MeshPhysicalMaterial({ color: 0x07060c, metalness: .7, roughness: .2, clearcoat: 1, clearcoatRoughness: .06, envMapIntensity: 1.1 });
+    var side = new T.MeshStandardMaterial({ color: 0x8a5cff, emissive: 0x5b2ee0, emissiveIntensity: .75, metalness: .45, roughness: .26, envMapIntensity: 1 });
     var mesh = new T.Mesh(geo, [cap, side]);
     var group = new T.Group(); group.add(mesh); scene.add(group);
     scene.add(new T.AmbientLight(0xffffff, .35));
@@ -486,7 +555,7 @@ var VIPRA_CONFIG = {
     var px = 0, py = 0, spin = 0, spinV = 0, running = false, visible = true;
     window.addEventListener("pointermove", function (e) { px = e.clientX / innerWidth * 2 - 1; py = e.clientY / innerHeight * 2 - 1; }, { passive: true });
     var stage = $(".hero__stage");
-    if (stage) stage.addEventListener("click", function () { spinV += .28; Sound.pop(); Vip.say("Wheee! That's our logo. VD, Vipra Digital.", { mood: "wow" }); });
+    if (stage) stage.addEventListener("click", function () { spinV += .28; Sound.pop(); Vip.mood("wow", 1400); });
     function frame(t) {
       if (!visible || html.classList.contains("easy")) { running = false; return; }
       var s = t / 1000;
@@ -571,10 +640,66 @@ var VIPRA_CONFIG = {
   (function meet() {
     var art = $("#meetArt"); if (!art) return;
     art.innerHTML = vipSVG();
-    var s = $("svg", art), n = 0, moods = ["happy", "love", "wow"];
-    art.style.cursor = "pointer";
-    art.addEventListener("click", function () { s.classList.remove("ex-happy", "ex-love", "ex-wow"); s.classList.add("ex-" + moods[n++ % 3]); s.classList.remove("is-wave"); void s.getBoundingClientRect(); s.classList.add("is-wave"); Sound.pop(); });
-    setInterval(function () { s.classList.add("is-blink"); setTimeout(function () { s.classList.remove("is-blink"); }, 130); }, 3800);
+    var s = $("svg", art), n = 0, moods = ["happy", "love", "wow", "wink"];
+    art.style.cursor = "pointer"; art.setAttribute("role", "button"); art.setAttribute("tabindex", "0"); art.setAttribute("aria-label", "VIP. Press to say hi.");
+    var poke = function () { react(s, moods[n++ % 4]); sparkle(art, 12); s.classList.remove("is-wave"); void s.getBoundingClientRect(); s.classList.add("is-wave"); Sound.pop(); Vip.open(); };
+    art.addEventListener("click", poke);
+    art.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); poke(); } });
+    setInterval(function () { s.classList.add("is-blink"); setTimeout(function () { s.classList.remove("is-blink"); }, 120); }, 3800);
+  })();
+
+  /* ================= premium layer ================= */
+  (function smooth() {
+    if (!window.Lenis || !finePointer) return;
+    var lenis = null;
+    function on() {
+      if (lenis || calm()) return;
+      try { lenis = new window.Lenis({ lerp: .11, wheelMultiplier: .95 }); } catch (e) { lenis = null; return; }
+      (function raf(t) { if (!lenis) return; lenis.raf(t); requestAnimationFrame(raf); })(performance.now());
+    }
+    function off() { if (lenis) { lenis.destroy(); lenis = null; } }
+    on();
+    document.addEventListener("vd-easy", function () { if (calm()) off(); else on(); });
+    window.__lenis = { stop: function () { if (lenis) lenis.stop(); }, start: function () { if (lenis) lenis.start(); } };
+  })();
+
+  (function cursor() {
+    if (!finePointer) return;
+    var c = document.createElement("div"); c.className = "cursor"; c.setAttribute("aria-hidden", "true");
+    c.innerHTML = '<span class="cursor__label"></span>'; document.body.appendChild(c);
+    var lab = c.firstChild, x = -100, y = -100, tx = -100, ty = -100, on = false;
+    window.addEventListener("pointermove", function (e) {
+      tx = e.clientX; ty = e.clientY; if (!on) { x = tx; y = ty; on = true; c.classList.add("is-on"); }
+      var t = e.target.closest && e.target.closest("a, button, label, summary, .vip__fig, #meetArt, .concept, .hero__stage, input, textarea");
+      var txt = !!t && t.matches("input, textarea");
+      var l = !t ? "" : t.closest(".concept") ? "Peek" : t.closest(".hero__stage") ? "Spin" : "";
+      c.classList.toggle("is-hover", !!t && !txt); c.classList.toggle("is-text", txt); c.classList.toggle("has-label", !!l); if (l) lab.textContent = l;
+    }, { passive: true });
+    document.addEventListener("mouseleave", function () { c.classList.remove("is-on"); on = false; });
+    (function loop() { x = lerp(x, tx, .22); y = lerp(y, ty, .22); c.style.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0)"; requestAnimationFrame(loop); })();
+  })();
+
+  if (finePointer) $$(".tile, .pkg, .step, .val, .card, .meet, .form, .quote, .slot--cta .slot__frame").forEach(function (el) {
+    el.classList.add("spot");
+    el.addEventListener("pointermove", function (e) { var r = el.getBoundingClientRect(); el.style.setProperty("--gx", (e.clientX - r.left).toFixed(0) + "px"); el.style.setProperty("--gy", (e.clientY - r.top).toFixed(0) + "px"); });
+  });
+
+  (function heroLight() {
+    var h = $(".hero"); if (!h || !finePointer) return;
+    h.addEventListener("pointermove", function (e) { var r = h.getBoundingClientRect(); h.style.setProperty("--hx", ((e.clientX - r.left) / r.width * 100).toFixed(1) + "%"); h.style.setProperty("--hy", ((e.clientY - r.top) / r.height * 100).toFixed(1) + "%"); });
+  })();
+
+  (function hangSwing() {
+    var sw = $(".hang__swing"); if (!sw) return;
+    var a = 0, va = 0, lastY = scrollY;
+    (function loop(t) {
+      var dy = scrollY - lastY; lastY = scrollY;
+      if (!calm()) { va += -dy * .012 - a * .035; va *= .93; a = clamp(a + va, -10, 10); }
+      else { a = 0; va = 0; }
+      var idle = calm() ? 0 : Math.sin(t / 1300) * 1.1;
+      sw.style.setProperty("--swing", (a + idle).toFixed(2) + "deg");
+      requestAnimationFrame(loop);
+    })(performance.now());
   })();
 
   /* ================= contact form ================= */
@@ -586,9 +711,8 @@ var VIPRA_CONFIG = {
     var toPos = function (v) { return Math.log(clamp(v, MIN, MAX) / MIN) / Math.log(MAX / MIN) * 1000; };
     var nice = function (v) { var st = v < 100000 ? 1000 : v < 500000 ? 5000 : 10000; return clamp(Math.round(v / st) * st, MIN, MAX); };
     function words(v) { if (v >= 100000) { var l = v / 100000; return (l % 1 ? l.toFixed(l < 10 ? 2 : 1).replace(/0$/, "") : l) + " lakh rupees"; } return (v / 1000) + " thousand rupees"; }
-    var lastBand = "", talkT = null, value = 40000;
+    var lastBand = "", value = 40000;
     function bandOf(v) { return v >= MAX ? "max" : v >= 300000 ? "high" : v >= 75000 ? "mid" : "low"; }
-    var bandLines = { low: "Every big brand started small. Let's talk.", mid: "Nice. That opens up plenty of options.", high: "Ooh. Now we can get really fancy.", max: "₹10 lakh! I'm putting on my best jacket." };
     function setVal(v, from) {
       value = nice(v);
       if (from !== "input") inp.value = inr(value);
@@ -596,7 +720,7 @@ var VIPRA_CONFIG = {
       range.style.setProperty("--p", (range.value / 10) + "%");
       band.textContent = words(value) + (value >= MAX ? " or more" : "");
       var b = bandOf(value);
-      if (b !== lastBand) { clearTimeout(talkT); if (lastBand) talkT = setTimeout(function () { Vip.say(bandLines[b], { mood: b === "max" ? "love" : "happy" }); }, 450); lastBand = b; }
+      if (b !== lastBand) { if (lastBand) Vip.mood(b === "max" ? "love" : b === "low" ? null : "wow", 1500); lastBand = b; }
     }
     range.addEventListener("input", function () { setVal(toVal(+range.value), "range"); if (+range.value % 40 === 0) Sound.tick(); });
     inp.addEventListener("input", function () { var n = parseInt(inp.value.replace(/[^\d]/g, ""), 10); if (n) setVal(n, "input"); });
@@ -614,7 +738,7 @@ var VIPRA_CONFIG = {
       if (bad("f-name", name.length < 2)) errs.push("name");
       if (bad("f-phone", cc === "+91" ? phone.length !== 10 : phone.length < 6 || phone.length > 14)) errs.push("phone number");
       if (bad("f-msg", msg.length < 8)) errs.push("business details");
-      if (errs.length) { Vip.say("Almost! Just missing your " + errs.join(" and ") + ".", { mood: "wow" }); var first = $(".field.is-bad input, .field.is-bad textarea", f); if (first) first.focus(); return; }
+      if (errs.length) { var first = $(".field.is-bad input, .field.is-bad textarea", f); if (first) first.focus(); return; }
       var qs = new URLSearchParams(location.search);
       var data = {
         name: name, phone: cc + phone, business: val("business"), city: val("city"), business_type: val("type"), need: val("need"),
@@ -633,7 +757,7 @@ var VIPRA_CONFIG = {
         $(".tag", done).textContent = received ? "Received" : "One more tap";
         $("#donePre").textContent = text; $("#doneWa").href = waLink(text);
         f.hidden = true; done.hidden = false; done.scrollIntoView({ behavior: calm() ? "auto" : "smooth", block: "center" });
-        Vip.say(received ? "Enquiry received! Talk soon, " + first + "." : "One last tap on Send on WhatsApp and we're talking!", { mood: "love", wave: true });
+        Vip.mood("love", 2500); Vip.wave();
         Sound.bell();
       }
       if (VIPRA_CONFIG.webhookUrl) {
